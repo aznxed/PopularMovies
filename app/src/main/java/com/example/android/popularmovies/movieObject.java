@@ -2,11 +2,13 @@ package com.example.android.popularmovies;
 
 public class movieObject {
     private String name;
-    private int photo;
+    private String description;
+    private String photoUrl;
+    private int rating;
 
-    public movieObject(String name, int photo){
+    public movieObject(String name, String photoUrl){
         this.name = name;
-        this.photo = photo;
+        this.photoUrl = photoUrl;
     }
 
     public String getName(){
@@ -17,12 +19,12 @@ public class movieObject {
         this.name = name;
     }
 
-    public int getPhoto(){
-        return photo;
+    public String getPhoto(){
+        return photoUrl;
     }
 
-    public void setPhoto(){
-        this.photo = photo;
+    public void setPhoto(String photoUrl){
+        this.photoUrl = photoUrl;
     }
 
 }

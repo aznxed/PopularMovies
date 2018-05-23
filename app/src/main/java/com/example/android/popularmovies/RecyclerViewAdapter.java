@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders>{
     private List<movieObject> movieList;
@@ -29,8 +32,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolders holder, int position) {
-        holder.movieName.setText(movieList.get(position).getName());
-        holder.movieImage.setImageResource(movieList.get(position).getPhoto());
+        //holder.movieName.setText(movieList.get(position).getName());
+
+        //Picasso.with(context).load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(holder.movieImage);
+        Picasso.with(context).load(movieList.get(position).getPhoto()).into(holder.movieImage);
+        //holder.movieImage.setImageResource(movieList.get(position).getPhoto());
+
     }
 
     @Override
