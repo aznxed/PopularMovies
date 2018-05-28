@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -50,13 +49,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class RecyclerViewHolders extends RecyclerView.ViewHolder implements OnClickListener {
 
-        public TextView movieName;
         public ImageView movieImage;
 
         public RecyclerViewHolders(View itemView) {
             super(itemView);
 
-            //movieName = (TextView)itemView.findViewById(R.id.movie_name);
             movieImage = (ImageView)itemView.findViewById(R.id.movie_image);
             itemView.setOnClickListener(this);
         }

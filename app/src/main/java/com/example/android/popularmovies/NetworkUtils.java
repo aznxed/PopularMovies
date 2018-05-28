@@ -16,16 +16,19 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final static String API_KEY = "INSERT API KEY HERE";
+    final static String API_KEY = "INSERTAPIKEY";
     final static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
-    final static String sortByPopular = "popular";
-    final static String sortByRating = "top_rated";
     final static String ENGLISH = "en-US";
 
-    public static URL buildUrl() {
+    public static URL buildUrl(int sort) {
+        String sortBy = "top_rated";;
+        if(sort == 0){
+            sortBy = "popular";
+        }
+
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendEncodedPath(sortByPopular)
+                .appendEncodedPath(sortBy)
                 .appendQueryParameter("api_key", API_KEY)
                 .appendQueryParameter("language", ENGLISH)
                 .appendQueryParameter("page", "1")

@@ -15,7 +15,6 @@ import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private Toolbar topToolBar;
     private TextView detailTitle;
     private ImageView detailImage;
     private TextView releaseDateText;
@@ -27,14 +26,11 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        topToolBar = (Toolbar) findViewById(R.id.toolbar);
         detailTitle = (TextView)findViewById(R.id.detail_title);
         detailImage = (ImageView)findViewById(R.id.detail_image);
         releaseDateText = (TextView)findViewById(R.id.release_date);
         ratingText = (TextView)findViewById(R.id.rating);
         overviewText = (TextView)findViewById(R.id.overview);
-
-        setSupportActionBar(topToolBar);
 
         Intent intentThatCalledActivity = getIntent();
         String title = intentThatCalledActivity.getStringExtra("original_title");
@@ -51,7 +47,6 @@ public class DetailActivity extends AppCompatActivity {
 
         String overview = intentThatCalledActivity.getStringExtra("overview");
         overviewText.setText(overview);
-
 
     }
 

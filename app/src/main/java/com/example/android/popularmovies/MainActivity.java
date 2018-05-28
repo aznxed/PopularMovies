@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -21,7 +22,6 @@ import static com.example.android.popularmovies.NetworkUtils.parseJSON;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemClickListener{
 
-    private Toolbar topToolBar;
     private GridLayoutManager movieLayout;
     private RecyclerView rView;
     private RecyclerViewAdapter rcAdapter;
@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading);
         mLoadingIndicator.setVisibility(View.VISIBLE);
-        topToolBar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(topToolBar);
 
         movieLayout = new GridLayoutManager(MainActivity.this, 2);
         rView = (RecyclerView)findViewById(R.id.recycler_view);
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         listener = this;
         movieList = null;
 
-        new MovieQueryTask().execute(NetworkUtils.buildUrl());
+        new MovieQueryTask().execute(NetworkUtils.buildUrl(0));
     }
 
     @Override
@@ -61,6 +59,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemSelected = item.getItemId();
+
+        if(itemSelected == R.id.action_settings){
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private class MovieQueryTask extends AsyncTask<URL, Void, String> {
 
