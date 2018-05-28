@@ -1,8 +1,6 @@
 package com.example.android.popularmovies;
 
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final static String API_KEY = "INSERT API KEY";
+    final static String API_KEY = "INSERT API KEY HERE";
     final static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
     final static String sortByPopular = "popular";
@@ -74,7 +72,10 @@ public class NetworkUtils {
             JSONObject movie = (JSONObject) results.get(a);
             String movieTitle = movie.getString("title");
             String imageUrl = movie.getString("poster_path");
-            movieObjectList.add(new movieObject(movieTitle, IMAGE_BASE_URL.concat(imageUrl)));
+            String description = movie.getString("overview");
+            String rating = movie.getString("vote_average");
+            String release = movie.getString("release_date");
+            movieObjectList.add(new movieObject(movieTitle, IMAGE_BASE_URL.concat(imageUrl), description, rating, release));
         }
 
         return movieObjectList;

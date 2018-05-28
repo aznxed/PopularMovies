@@ -4,27 +4,41 @@ public class movieObject {
     private String name;
     private String description;
     private String photoUrl;
-    private int rating;
+    private String rating;
+    private String releaseDate;
 
     public movieObject(String name, String photoUrl){
         this.name = name;
         this.photoUrl = photoUrl;
     }
 
-    public String getName(){
-        return name;
+    public movieObject(String name, String photoUrl, String description, String rating, String releaseDate){
+        this.name = name;
+        this.photoUrl = photoUrl;
+        this.description = description;
+        this.rating = rating;
+        this.releaseDate = releaseDate;
     }
 
-    public void setName(String name){
-        this.name = name;
+    public String getName(){
+        return name;
     }
 
     public String getPhoto(){
         return photoUrl;
     }
 
-    public void setPhoto(String photoUrl){
-        this.photoUrl = photoUrl;
+    public String getDescription(){
+        return description;
     }
+
+    public String getRating(){
+        return rating;
+    }
+
+    public String getReleaseDate(){
+        return releaseDate;
+    }
+
 
 }

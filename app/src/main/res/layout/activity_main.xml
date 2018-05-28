@@ -15,9 +15,18 @@
         android:minHeight="?attr/actionBarSize"/>
 
     <RelativeLayout
+        android:id="@+id/rLay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:indeterminate="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:visibility="invisible" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -26,5 +35,7 @@
             android:scrollbars="vertical"/>
 
     </RelativeLayout>
+
+
 
 </LinearLayout>
