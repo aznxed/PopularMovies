@@ -2,12 +2,10 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,5 +53,16 @@ public class DetailActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemSelected = item.getItemId();
+
+        if(itemSelected == R.id.action_settings){
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

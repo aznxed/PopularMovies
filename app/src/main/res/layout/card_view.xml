@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryDark"
         android:scaleType="centerCrop"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:contentDescription="Movie Poster" />
 
 
 </android.support.v7.widget.CardView>

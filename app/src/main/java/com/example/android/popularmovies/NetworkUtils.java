@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final static String API_KEY = "INSERTAPIKEY";
-    final static String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
-    final static String ENGLISH = "en-US";
+    final private static String API_KEY = "INSERTAPIKEY";
+    final private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
+    final private static String ENGLISH = "en-US";
 
     public static URL buildUrl(int sort) {
-        String sortBy = "top_rated";;
+        String sortBy = "top_rated";
         if(sort == 0){
             sortBy = "popular";
         }
@@ -65,8 +65,7 @@ public class NetworkUtils {
 
 
     public static List<movieObject> parseJSON(String JSON) throws JSONException{
-        List<movieObject> movieObjectList = new ArrayList<movieObject>();
-        //Log.d("Test", JSON);
+        List<movieObject> movieObjectList = new ArrayList<>();
         JSONObject movieJson = new JSONObject(JSON);
         JSONArray results = movieJson.getJSONArray("results");
 

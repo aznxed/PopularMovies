@@ -1,17 +1,17 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,7 +20,9 @@ import org.json.JSONException;
 
 import static com.example.android.popularmovies.NetworkUtils.parseJSON;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.ListItemClickListener{
+public class MainActivity extends AppCompatActivity
+        implements RecyclerViewAdapter.ListItemClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener{
 
     private GridLayoutManager movieLayout;
     private RecyclerView rView;
@@ -28,15 +30,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private RecyclerViewAdapter.ListItemClickListener listener;
     private List<movieObject> movieList;
     private ProgressBar mLoadingIndicator;
-    private RelativeLayout relativeLayout;
+    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
+    private final int SORT_BY_RATING = 1;
+    private final int SORT_BY_POPULAR = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //relativeLayout = (RelativeLayout)findViewById(R.id.rLay);
-        //relativeLayout.setVisibility(View.INVISIBLE);
 
         mLoadingIndicator = (ProgressBar) findViewById(R.id.loading);
         mLoadingIndicator.setVisibility(View.VISIBLE);
@@ -49,7 +51,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         listener = this;
         movieList = null;
 
-        new MovieQueryTask().execute(NetworkUtils.buildUrl(0));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        String sort = prefs.getString("sortBy","");
+
+        if(sort.equals("top_rate")){
+            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_RATING));
+        }
+        else{
+            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (PREFERENCES_HAVE_BEEN_UPDATED) {
+
+            PREFERENCES_HAVE_BEEN_UPDATED = false;
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String sort = prefs.getString("sortBy","");
+
+            if(sort.equals("top_rate")){
+                new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_RATING));
+            }
+            else{
+                new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
+            }
+        }
+
     }
 
     @Override
@@ -68,6 +99,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        PREFERENCES_HAVE_BEEN_UPDATED = true;
     }
 
     private class MovieQueryTask extends AsyncTask<URL, Void, String> {
@@ -95,10 +131,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             }
 
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            //relativeLayout.setVisibility(View.VISIBLE);
             rcAdapter = new RecyclerViewAdapter(MainActivity.this, movieList, listener);
             rView.setAdapter(rcAdapter);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

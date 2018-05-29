@@ -5,9 +5,9 @@
 
     <ListPreference
         android:title="Sort By"
-        android:defaultValue="test"
+        android:defaultValue="popularity"
         android:entries="@array/sort_label"
         android:entryValues="@array/sort_values"
-        android:key="key" />
+        android:key="sortBy" />
 
 </PreferenceScreen>
