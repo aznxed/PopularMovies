@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final private static String API_KEY = "c480a9adf41f702cf929f7fcb53a79dc";
+    final private static String API_KEY = "INSERTAPIKEY";
     final private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500/";
     final private static String ENGLISH = "en-US";
