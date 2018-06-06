@@ -4,6 +4,7 @@ public class movieObject {
     private String name;
     private String description;
     private String photoUrl;
+    private String backgroundUrl;
     private String rating;
     private String releaseDate;
 
@@ -12,9 +13,10 @@ public class movieObject {
         this.photoUrl = photoUrl;
     }
 
-    public movieObject(String name, String photoUrl, String description, String rating, String releaseDate){
+    public movieObject(String name, String photoUrl, String backgroundUrl, String description, String rating, String releaseDate){
         this.name = name;
         this.photoUrl = photoUrl;
+        this.backgroundUrl = backgroundUrl;
         this.description = description;
         this.rating = rating;
         this.releaseDate = releaseDate;
@@ -26,6 +28,10 @@ public class movieObject {
 
     public String getPhoto(){
         return photoUrl;
+    }
+
+    public String getBackground(){
+        return backgroundUrl;
     }
 
     public String getDescription(){

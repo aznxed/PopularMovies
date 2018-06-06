@@ -1,87 +1,66 @@
 package com.example.android.popularmovies;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import org.json.JSONException;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import static com.example.android.popularmovies.NetworkUtils.parseJSON;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity
-        implements RecyclerViewAdapter.ListItemClickListener,
-        SharedPreferences.OnSharedPreferenceChangeListener{
-
-    private GridLayoutManager movieLayout;
-    private RecyclerView rView;
-    private RecyclerViewAdapter rcAdapter;
-    private RecyclerViewAdapter.ListItemClickListener listener;
-    private List<movieObject> movieList;
-    private ProgressBar mLoadingIndicator;
-    private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
-    private final int SORT_BY_RATING = 1;
-    private final int SORT_BY_POPULAR = 0;
-
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading);
-        mLoadingIndicator.setVisibility(View.VISIBLE);
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        movieLayout = new GridLayoutManager(MainActivity.this, 2);
-        rView = (RecyclerView)findViewById(R.id.recycler_view);
-        rView.setHasFixedSize(true);
-        rView.setLayoutManager(movieLayout);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        listener = this;
-        movieList = null;
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
-        String sort = prefs.getString("sortBy","");
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        if(sort.equals("top_rate")){
-            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_RATING));
-        }
-        else{
-            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
-        }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (PREFERENCES_HAVE_BEEN_UPDATED) {
 
-            PREFERENCES_HAVE_BEEN_UPDATED = false;
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String sort = prefs.getString("sortBy","");
-
-            if(sort.equals("top_rate")){
-                new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_RATING));
-            }
-            else{
-                new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
-            }
-        }
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,66 +73,46 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
 
-        if(itemSelected == R.id.action_settings){
-            startActivity(new Intent(this, SettingsActivity.class));
+        if(itemSelected == R.id.sort_popularity){
+            item.setChecked(true);
+        }
+        else if(itemSelected == R.id.sort_rating){
+            item.setChecked(true);
         }
 
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        PREFERENCES_HAVE_BEEN_UPDATED = true;
-    }
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private class MovieQueryTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            URL searchUrl = urls[0];
-            String movieJSON = null;
-            try {
-                movieJSON = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return movieJSON;
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            switch (position){
+                case 0:
+                    return new MoviesFragment();
+                case 1:
+                    return new FavoritesFragment();
 
-            try {
-                movieList = parseJSON(s);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                default:
+                    return new MoviesFragment();
             }
-
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            rcAdapter = new RecyclerViewAdapter(MainActivity.this, movieList, listener);
-            rView.setAdapter(rcAdapter);
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 2;
+        }
 
-    @Override
-    public void onListItemClick(int clickedItemIndex) {
-        movieObject movieClicked = movieList.get(clickedItemIndex);
-        Intent movieDetail = new Intent(MainActivity.this, DetailActivity.class);
-
-        movieDetail.putExtra("poster_path",movieClicked.getPhoto());
-        movieDetail.putExtra("overview", movieClicked.getDescription());
-        movieDetail.putExtra("original_title", movieClicked.getName());
-        movieDetail.putExtra("release_date", movieClicked.getReleaseDate());
-        movieDetail.putExtra("vote_average", movieClicked.getRating());
-        startActivity(movieDetail);
     }
 
 }

@@ -1,12 +1,22 @@
 <resources>
     <string name="app_name">PopularMovies</string>
-    <string-array name="sort_label">
-        <item>Sort by Popularity</item>
-        <item>Sort by Top Rated</item>
-    </string-array>
+    <!--CardView Strings-->
+    <string name="movie_image_description">Movie Poster</string>
 
-    <string-array name="sort_values">
-        <item>popularity</item>
-        <item>top_rate</item>
-    </string-array>
+    <!--Menu Strings-->
+    <string name="menu_title">Sort By</string>
+    <string name="menu_popular">Popularity</string>
+    <string name="menu_rating">Rating</string>
+
+    <!--Detail Activity Strings-->
+    <string name="release_label">RELEASED</string>
+    <string name="rating_label">RATING</string>
+    <string name="trailer_label">Trailers</string>
+    ``
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

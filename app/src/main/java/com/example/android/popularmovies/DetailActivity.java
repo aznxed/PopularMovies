@@ -3,11 +3,12 @@ package com.example.android.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -18,6 +19,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView releaseDateText;
     private TextView ratingText;
     private TextView overviewText;
+    private ImageView backgroundImage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intentThatCalledActivity = getIntent();
         String title = intentThatCalledActivity.getStringExtra("original_title");
+        setTitle(title);
         detailTitle.setText(title);
 
         String photoUrl = intentThatCalledActivity.getStringExtra("poster_path");
@@ -46,23 +49,22 @@ public class DetailActivity extends AppCompatActivity {
         String overview = intentThatCalledActivity.getStringExtra("overview");
         overviewText.setText(overview);
 
+        backgroundImage = (ImageView)findViewById(R.id.background2);
+        String backgroundUrl = intentThatCalledActivity.getStringExtra("backdrop_path");
+
+        Picasso.with(getBaseContext()).load(backgroundUrl.replace("w500","w780")).into(backgroundImage);
+
+        FloatingActionButton favButton = (FloatingActionButton) findViewById(R.id.fav_button);
+
+        favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
+                // Create a new intent to start an AddTaskActivity
+                //Intent addTaskIntent = new Intent(DetailActivity.this, AddTaskActivity.class);
+                //startActivity(addTaskIntent);
+            }
+        });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemSelected = item.getItemId();
-
-        if(itemSelected == R.id.action_settings){
-            startActivity(new Intent(this, SettingsActivity.class));
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

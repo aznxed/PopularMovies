@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +17,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final private static String API_KEY = "INSERTAPIKEY";
+    final private static String API_KEY = "c480a9adf41f702cf929f7fcb53a79dc";
     final private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
-    final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185/";
+    final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500/";
     final private static String ENGLISH = "en-US";
 
     public static URL buildUrl(int sort) {
@@ -41,6 +42,7 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
+        Log.d("Test", url.toString());
         return url;
     }
 
@@ -68,8 +70,11 @@ public class NetworkUtils {
         List<movieObject> movieObjectList = new ArrayList<>();
         JSONObject movieJson = new JSONObject(JSON);
         JSONArray results = movieJson.getJSONArray("results");
+        int numMovies = 0;
+        if(results != null){
+            numMovies = results.length();
+        }
 
-        int numMovies = results.length();
         for(int a = 0; a < numMovies; a++){
             JSONObject movie = (JSONObject) results.get(a);
             String movieTitle = movie.getString("title");
@@ -77,7 +82,8 @@ public class NetworkUtils {
             String description = movie.getString("overview");
             String rating = movie.getString("vote_average");
             String release = movie.getString("release_date");
-            movieObjectList.add(new movieObject(movieTitle, IMAGE_BASE_URL.concat(imageUrl), description, rating, release));
+            String backgroundUrl = movie.getString("backdrop_path");
+            movieObjectList.add(new movieObject(movieTitle, IMAGE_BASE_URL.concat(imageUrl), IMAGE_BASE_URL.concat(backgroundUrl),description, rating, release));
         }
 
         return movieObjectList;

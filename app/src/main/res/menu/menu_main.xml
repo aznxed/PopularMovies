@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
-
-    <item android:id="@+id/action_settings"
-        android:title="Settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-
+    <item
+        android:title="@string/menu_title"
+        android:id="@+id/menu_title"
+        app:showAsAction="always">
+        <menu android:id="@+id/sort_menu">
+            <group android:checkableBehavior="single"
+                android:visible="true">
+                <item android:id="@+id/sort_popularity"
+                    android:title="@string/menu_popular"
+                    android:checked="true"/>
+                <item android:id="@+id/sort_rating"
+                    android:title="@string/menu_rating"/>
+            </group>
+        </menu>
+    </item>
 </menu>
