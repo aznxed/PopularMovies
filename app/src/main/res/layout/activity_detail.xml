@@ -153,5 +153,6 @@
         app:elevation="6dp"
         app:pressedTranslationZ="12dp"
         app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"
+        android:onClick="onClickFavorite"/>
 </android.support.design.widget.CoordinatorLayout>

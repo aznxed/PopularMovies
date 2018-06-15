@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final private static String API_KEY = "INSERTAPIKEY";
+    final private static String API_KEY = "INSERT API KEY";
     final private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500/";
     final private static String ENGLISH = "en-US";
@@ -77,13 +77,14 @@ public class NetworkUtils {
 
         for(int a = 0; a < numMovies; a++){
             JSONObject movie = (JSONObject) results.get(a);
+            int id = movie.getInt("id");
             String movieTitle = movie.getString("title");
             String imageUrl = movie.getString("poster_path");
             String description = movie.getString("overview");
             String rating = movie.getString("vote_average");
             String release = movie.getString("release_date");
             String backgroundUrl = movie.getString("backdrop_path");
-            movieObjectList.add(new movieObject(movieTitle, IMAGE_BASE_URL.concat(imageUrl), IMAGE_BASE_URL.concat(backgroundUrl),description, rating, release));
+            movieObjectList.add(new movieObject(id, movieTitle, IMAGE_BASE_URL.concat(imageUrl), IMAGE_BASE_URL.concat(backgroundUrl),description, rating, release));
         }
 
         return movieObjectList;

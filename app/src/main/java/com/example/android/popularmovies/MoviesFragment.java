@@ -131,7 +131,7 @@ public class MoviesFragment extends Fragment
         movieObject movieClicked = movieList.get(clickedItemIndex);
         Intent movieDetail = new Intent(getActivity(), DetailActivity.class);
         //Intent movieDetail = new Intent(MainActivity.this, FavoriteActivity.class);
-
+        movieDetail.putExtra("id", movieClicked.getId());
         movieDetail.putExtra("poster_path",movieClicked.getPhoto());
         movieDetail.putExtra("backdrop_path", movieClicked.getBackground());
         movieDetail.putExtra("overview", movieClicked.getDescription());

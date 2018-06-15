@@ -13,6 +13,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version
     private static final int VERSION = 1;
 
+
     MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
@@ -22,9 +23,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         // Create tasks table (careful to follow SQL formatting rules)
         final String CREATE_TABLE = "CREATE TABLE "  + MovieContract.MovieEntry.TABLE_NAME + " (" +
                 MovieContract.MovieEntry._ID                + " INTEGER PRIMARY KEY, " +
-                MovieContract.MovieEntry.COLUMN_NAME + " TEXT NOT NULL); ";
-        Log.d("Test", CREATE_TABLE);
+                MovieContract.MovieEntry.COLUMN_NAME + " TEXT NOT NULL);";
         sqLiteDatabase.execSQL(CREATE_TABLE);
+        Log.d("Test", "Database Created");
     }
 
     @Override

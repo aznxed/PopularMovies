@@ -49,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class RecyclerViewHolders extends RecyclerView.ViewHolder implements OnClickListener {
 
-        public ImageView movieImage;
+        private ImageView movieImage;
 
         public RecyclerViewHolders(View itemView) {
             super(itemView);

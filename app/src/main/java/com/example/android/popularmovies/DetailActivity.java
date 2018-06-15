@@ -1,6 +1,8 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
@@ -54,6 +57,7 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.with(getBaseContext()).load(backgroundUrl.replace("w500","w780")).into(backgroundImage);
 
+        /*
         FloatingActionButton favButton = (FloatingActionButton) findViewById(R.id.fav_button);
 
         favButton.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +68,26 @@ public class DetailActivity extends AppCompatActivity {
                 //Intent addTaskIntent = new Intent(DetailActivity.this, AddTaskActivity.class);
                 //startActivity(addTaskIntent);
             }
-        });
+        });*/
+    }
+
+    public void onClickFavorite(View view) {
+        String input = (String)detailTitle.getText();
+        if (input.length() == 0) {
+            return;
+        }
+        Toast.makeText(getApplicationContext(), input, Toast.LENGTH_SHORT).show();
+
+        ContentValues contentValues = new ContentValues();
+        // Put the task description and selected mPriority into the ContentValues
+        contentValues.put(MovieContract.MovieEntry.COLUMN_NAME, input);
+
+        // Insert the content values via a ContentResolver
+        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+        if(uri != null) {
+            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 public class movieObject {
+    private int id;
     private String name;
     private String description;
     private String photoUrl;
@@ -13,13 +14,17 @@ public class movieObject {
         this.photoUrl = photoUrl;
     }
 
-    public movieObject(String name, String photoUrl, String backgroundUrl, String description, String rating, String releaseDate){
+    public movieObject(int id, String name, String photoUrl, String backgroundUrl, String description, String rating, String releaseDate){
+        this.id = id;
         this.name = name;
         this.photoUrl = photoUrl;
         this.backgroundUrl = backgroundUrl;
         this.description = description;
         this.rating = rating;
         this.releaseDate = releaseDate;
+    }
+    public int getId(){
+        return id;
     }
 
     public String getName(){
