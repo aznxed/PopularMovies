@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,29 +8,33 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.example.android.popularmovies.DetailActivity;
+import com.example.android.popularmovies.utils.NetworkUtils;
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.movieObject;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import org.json.JSONException;
 
-import static com.example.android.popularmovies.NetworkUtils.parseJSON;
+import static com.example.android.popularmovies.utils.NetworkUtils.parseMovieJSON;
 
 public class MoviesFragment extends Fragment
-        implements RecyclerViewAdapter.ListItemClickListener{
+        implements RecyclerViewMovieAdapter.ListItemClickListener {
 
-    private RecyclerViewAdapter rcAdapter;
-    private RecyclerViewAdapter.ListItemClickListener listClickListener;
+    private RecyclerViewMovieAdapter.ListItemClickListener listClickListener;
     private List<movieObject> movieList;
     private final int SORT_BY_RATING = 1;
     private final int SORT_BY_POPULAR = 0;
@@ -39,26 +43,28 @@ public class MoviesFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        setHasOptionsMenu(true);
-        listClickListener = this;
-        movieList = null;
-
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
-            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
-        }
-
         return inflater.inflate(R.layout.fragment_movies, container, false);
 
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
+        listClickListener = this;
+        movieList = null;
+
+        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_POPULAR));
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(!isConnected){
@@ -68,17 +74,16 @@ public class MoviesFragment extends Fragment
         int itemSelected = item.getItemId();
 
         if(itemSelected == R.id.sort_popularity){
-            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_POPULAR));
+            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_POPULAR));
             Toast.makeText(getContext(), "Sort By Popular", Toast.LENGTH_SHORT).show();
         }
         else if(itemSelected == R.id.sort_rating){
-            new MovieQueryTask().execute(NetworkUtils.buildUrl(SORT_BY_RATING));
+            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_RATING));
             Toast.makeText(getContext(), "Sort By Rating", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
     private class MovieQueryTask extends AsyncTask<URL, Void, String> {
 
@@ -91,31 +96,25 @@ public class MoviesFragment extends Fragment
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return movieJSON;
         }
 
-
         @Override
         protected void onPostExecute(String s) {
-
             try {
-                movieList = parseJSON(s);
+                movieList = parseMovieJSON(s);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(getContext(), movieList, listClickListener);
+            RecyclerViewMovieAdapter rcAdapter = new RecyclerViewMovieAdapter(getContext(), movieList, listClickListener);
             int res = getResources().getConfiguration().orientation;
-            GridLayoutManager movieLayout = null;
+            GridLayoutManager movieLayout;
             if(res == Configuration.ORIENTATION_LANDSCAPE){
                 movieLayout = new GridLayoutManager(getContext(), 3);
-
             }
-
             else{
                 movieLayout = new GridLayoutManager(getContext(), 2);
-
             }
 
             RecyclerView rView = getView().findViewById(R.id.recycler_view);
@@ -125,13 +124,11 @@ public class MoviesFragment extends Fragment
         }
     }
 
-
     @Override
     public void onListItemClick(int clickedItemIndex) {
         movieObject movieClicked = movieList.get(clickedItemIndex);
         Intent movieDetail = new Intent(getActivity(), DetailActivity.class);
-        //Intent movieDetail = new Intent(MainActivity.this, FavoriteActivity.class);
-        movieDetail.putExtra("id", movieClicked.getId());
+        movieDetail.putExtra("id", Integer.toString(movieClicked.getId()));
         movieDetail.putExtra("poster_path",movieClicked.getPhoto());
         movieDetail.putExtra("backdrop_path", movieClicked.getBackground());
         movieDetail.putExtra("overview", movieClicked.getDescription());
@@ -140,5 +137,6 @@ public class MoviesFragment extends Fragment
         movieDetail.putExtra("vote_average", movieClicked.getRating());
         startActivity(movieDetail);
     }
+
 
 }

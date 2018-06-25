@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.fragments;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.R;
+import com.example.android.popularmovies.movieObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolders>{
+public class RecyclerViewMovieAdapter extends RecyclerView.Adapter<RecyclerViewMovieAdapter.RecyclerViewHolders>{
     private List<movieObject> movieList;
     private Context context;
     final private ListItemClickListener mOnClickListener;
@@ -23,7 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void onListItemClick(int clickedItemIndex);
     }
 
-    public RecyclerViewAdapter(Context context, List<movieObject> movieList, ListItemClickListener mOnClickListener){
+    public RecyclerViewMovieAdapter(Context context, List<movieObject> movieList, ListItemClickListener mOnClickListener){
         this.context = context;
         this.movieList = movieList;
         this.mOnClickListener = mOnClickListener;
@@ -56,10 +58,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             movieImage = (ImageView)itemView.findViewById(R.id.movie_image);
             itemView.setOnClickListener(this);
-        }
-
-        void bind(int listPostion){
-
         }
 
         @Override

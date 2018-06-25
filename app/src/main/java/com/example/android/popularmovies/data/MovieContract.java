@@ -22,7 +22,14 @@ public class MovieContract {
 
         // Since TaskEntry implements the interface "BaseColumns", it has an automatically produced
         // "_ID" column in addition to the two below
+        public static final String COLUMN_ID = "videoId";
+        public static final String COLUMN_BACKGROUND = "background";
+        public static final String COLUMN_IMAGE = "image";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_PLOT = "plot";
+        public static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_RELEASE = "release";
+
 
 
 

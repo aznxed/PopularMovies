@@ -47,7 +47,6 @@ public class MovieContentProvider extends ContentProvider {
         switch (match) {
             // Query for the tasks directory
             case FAVORITE:
-                Log.d("Test", "Hello from CP");
                 retCursor =  db.query(TABLE_NAME,
                         projection,
                         selection,
@@ -55,9 +54,6 @@ public class MovieContentProvider extends ContentProvider {
                         null,
                         null,
                         sortOrder);
-                if(retCursor == null){
-                    Log.d("Test", "Cursor is null");
-                }
                 break;
             // Default exception
             default:
@@ -71,6 +67,7 @@ public class MovieContentProvider extends ContentProvider {
         return retCursor;
     }
 
+
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
@@ -81,9 +78,6 @@ public class MovieContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
-        boolean test = (db == null);
-
-        Log.d("Test", Boolean.toString(test));
         int match = sUriMatcher.match(uri);
         Uri returnUri; // URI to be returned
 
@@ -113,8 +107,29 @@ public class MovieContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int numTasksDeleted;
+
+        // Query for the tasks directory and write a default case
+        switch (match) {
+            // Query for the tasks directory
+            case FAVORITE:
+                numTasksDeleted =  db.delete(TABLE_NAME,
+                        "videoId = ?",
+                        selectionArgs);
+                break;
+            // Default exception
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if(numTasksDeleted != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numTasksDeleted;
     }
 
     @Override

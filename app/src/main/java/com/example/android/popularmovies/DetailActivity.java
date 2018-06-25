@@ -1,93 +1,86 @@
 package com.example.android.popularmovies;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.MenuItem;
 
-import com.example.android.popularmovies.data.MovieContract;
-import com.squareup.picasso.Picasso;
+import com.example.android.popularmovies.fragments.DetailFragment;
+import com.example.android.popularmovies.fragments.ReviewFragment;
+import com.example.android.popularmovies.fragments.TrailersFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView detailTitle;
-    private ImageView detailImage;
-    private TextView releaseDateText;
-    private TextView ratingText;
-    private TextView overviewText;
-    private ImageView backgroundImage;
+    private DetailFragment detailFragment;
+    private ReviewFragment reviewFragment;
+    private TrailersFragment trailersFragment;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_details:
+                    setFragment(detailFragment);
+                    return true;
+                case R.id.navigation_reviews:
+                    setFragment(reviewFragment);
+                    return true;
+                case R.id.navigation_trailers:
+                    setFragment(trailersFragment);
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        detailTitle = (TextView)findViewById(R.id.detail_title);
-        detailImage = (ImageView)findViewById(R.id.detail_image);
-        releaseDateText = (TextView)findViewById(R.id.release_date);
-        ratingText = (TextView)findViewById(R.id.rating);
-        overviewText = (TextView)findViewById(R.id.overview);
+        detailFragment = new DetailFragment();
+        reviewFragment = new ReviewFragment();
+        trailersFragment = new TrailersFragment();
+
+        setFragment(detailFragment);
 
         Intent intentThatCalledActivity = getIntent();
+        String id = intentThatCalledActivity.getStringExtra("id");
         String title = intentThatCalledActivity.getStringExtra("original_title");
         setTitle(title);
-        detailTitle.setText(title);
 
         String photoUrl = intentThatCalledActivity.getStringExtra("poster_path");
-        Picasso.with(getBaseContext()).load(photoUrl).fit().centerInside().into(detailImage);
-
         String releaseDate = intentThatCalledActivity.getStringExtra("release_date");
-        releaseDateText.setText(releaseDate);
-
         String rating = intentThatCalledActivity.getStringExtra("vote_average");
-        ratingText.setText(rating.concat("/10"));
-
         String overview = intentThatCalledActivity.getStringExtra("overview");
-        overviewText.setText(overview);
-
-        backgroundImage = (ImageView)findViewById(R.id.background2);
         String backgroundUrl = intentThatCalledActivity.getStringExtra("backdrop_path");
 
-        Picasso.with(getBaseContext()).load(backgroundUrl.replace("w500","w780")).into(backgroundImage);
+        Bundle bundle = new Bundle();
+        bundle.putString("id",id);
+        reviewFragment.setArguments(bundle);
+        trailersFragment.setArguments(bundle);
+        bundle.putString("original_title", title);
+        bundle.putString("poster_path", photoUrl);
+        bundle.putString("release_date", releaseDate);
+        bundle.putString("vote_average", rating);
+        bundle.putString("overview", overview);
+        bundle.putString("backdrop_path", backgroundUrl);
+        detailFragment.setArguments(bundle);
 
-        /*
-        FloatingActionButton favButton = (FloatingActionButton) findViewById(R.id.fav_button);
-
-        favButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
-                // Create a new intent to start an AddTaskActivity
-                //Intent addTaskIntent = new Intent(DetailActivity.this, AddTaskActivity.class);
-                //startActivity(addTaskIntent);
-            }
-        });*/
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    public void onClickFavorite(View view) {
-        String input = (String)detailTitle.getText();
-        if (input.length() == 0) {
-            return;
-        }
-        Toast.makeText(getApplicationContext(), input, Toast.LENGTH_SHORT).show();
-
-        ContentValues contentValues = new ContentValues();
-        // Put the task description and selected mPriority into the ContentValues
-        contentValues.put(MovieContract.MovieEntry.COLUMN_NAME, input);
-
-        // Insert the content values via a ContentResolver
-        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
-
-        if(uri != null) {
-            Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-        }
+    private void setFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.commit();
     }
 
 }
