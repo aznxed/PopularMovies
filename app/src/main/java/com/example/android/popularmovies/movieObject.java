@@ -9,11 +9,6 @@ public class movieObject {
     private String rating;
     private String releaseDate;
 
-    public movieObject(String name, String photoUrl){
-        this.name = name;
-        this.photoUrl = photoUrl;
-    }
-
     public movieObject(int id, String name, String photoUrl, String backgroundUrl, String description, String rating, String releaseDate){
         this.id = id;
         this.name = name;

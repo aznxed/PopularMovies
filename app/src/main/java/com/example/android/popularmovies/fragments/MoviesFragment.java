@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.DetailActivity;
@@ -29,15 +30,17 @@ import java.net.URL;
 import java.util.List;
 import org.json.JSONException;
 
+import static com.example.android.popularmovies.utils.NetworkUtils.MOVIE_URL;
+import static com.example.android.popularmovies.utils.NetworkUtils.POPULAR;
+import static com.example.android.popularmovies.utils.NetworkUtils.TOP_RATED;
 import static com.example.android.popularmovies.utils.NetworkUtils.parseMovieJSON;
 
 public class MoviesFragment extends Fragment
         implements RecyclerViewMovieAdapter.ListItemClickListener {
 
     private RecyclerViewMovieAdapter.ListItemClickListener listClickListener;
+    private TextView errorText;
     private List<movieObject> movieList;
-    private final int SORT_BY_RATING = 1;
-    private final int SORT_BY_POPULAR = 0;
 
     @Nullable
     @Override
@@ -53,12 +56,19 @@ public class MoviesFragment extends Fragment
         setHasOptionsMenu(true);
         listClickListener = this;
         movieList = null;
+        errorText = getView().findViewById(R.id.error_message);
 
         ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected){
-            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_POPULAR));
+
+            new MovieQueryTask().execute(NetworkUtils.buildUrl(MOVIE_URL, POPULAR));
+        }
+        else {
+            String error = "Please connect to the Internet";
+            errorText.setText(error);
+            errorText.setVisibility(View.VISIBLE);
         }
     }
 
@@ -74,11 +84,11 @@ public class MoviesFragment extends Fragment
         int itemSelected = item.getItemId();
 
         if(itemSelected == R.id.sort_popularity){
-            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_POPULAR));
+            new MovieQueryTask().execute(NetworkUtils.buildUrl(MOVIE_URL, POPULAR));
             Toast.makeText(getContext(), "Sort By Popular", Toast.LENGTH_SHORT).show();
         }
         else if(itemSelected == R.id.sort_rating){
-            new MovieQueryTask().execute(NetworkUtils.buildMovieUrl(SORT_BY_RATING));
+            new MovieQueryTask().execute(NetworkUtils.buildUrl(MOVIE_URL, TOP_RATED));
             Toast.makeText(getContext(), "Sort By Rating", Toast.LENGTH_SHORT).show();
         }
 
@@ -103,6 +113,12 @@ public class MoviesFragment extends Fragment
         protected void onPostExecute(String s) {
             try {
                 movieList = parseMovieJSON(s);
+                if(movieList == null){
+                    String error = "Unable to retrieve data";
+                    errorText.setText(error);
+                    errorText.setVisibility(View.VISIBLE);
+                    return;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

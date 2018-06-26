@@ -34,7 +34,7 @@ public class RecyclerViewMovieAdapter extends RecyclerView.Adapter<RecyclerViewM
     @NonNull
     @Override
     public RecyclerViewHolders onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_view, null);
         return new RecyclerViewHolders(layoutView);
     }
 
@@ -56,7 +56,7 @@ public class RecyclerViewMovieAdapter extends RecyclerView.Adapter<RecyclerViewM
         public RecyclerViewHolders(View itemView) {
             super(itemView);
 
-            movieImage = (ImageView)itemView.findViewById(R.id.movie_image);
+            movieImage = itemView.findViewById(R.id.movie_image);
             itemView.setOnClickListener(this);
         }
 

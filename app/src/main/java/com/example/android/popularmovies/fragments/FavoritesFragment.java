@@ -15,16 +15,14 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.DetailActivity;
-import com.example.android.popularmovies.MainActivity;
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.MovieContract;
 
@@ -88,8 +86,8 @@ public class FavoritesFragment extends Fragment
 
             // deliverResult sends the result of the load, a Cursor, to the registered listener
             public void deliverResult(Cursor data) {
-                movieData = data;
                 super.deliverResult(data);
+                movieData = data;
             }
 
 
@@ -99,12 +97,21 @@ public class FavoritesFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Update the data that the adapter uses to create ViewHolders
+        TextView errorText = getView().findViewById(R.id.error_message);
+        if(data.getCount() == 0){
+            errorText.setVisibility(View.VISIBLE);
+        }
+        else{
+            errorText.setVisibility(View.GONE);
+        }
+
         mRecyclerView = getView().findViewById(R.id.favorites_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new RecyclerViewFavoriteAdapter(getContext(), itemClickListener, itemLongClickListener);
+        mAdapter = new RecyclerViewFavoriteAdapter(itemClickListener, itemLongClickListener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         mAdapter.swapCursor(data);
+
     }
 
     @Override
@@ -138,12 +145,14 @@ public class FavoritesFragment extends Fragment
         movieDetail.putExtra("original_title", cursor.getString(nameIndex));
         movieDetail.putExtra("release_date", cursor.getString(release));
         movieDetail.putExtra("vote_average", cursor.getString(rating));
+        cursor.close();
         startActivity(movieDetail);
+
 
     }
 
     @Override
-    public boolean onItemLongClicked(final int position) {
+    public void onItemLongClicked(final int position) {
         String[] list = {"Delete"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setItems(list, new DialogInterface.OnClickListener() {
@@ -156,9 +165,9 @@ public class FavoritesFragment extends Fragment
                 getActivity().getSupportLoaderManager().restartLoader(0, null, FavoritesFragment.this);
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
-        return true;
     }
 
 }

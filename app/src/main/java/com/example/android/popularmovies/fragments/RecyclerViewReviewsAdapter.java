@@ -16,7 +16,6 @@ public class RecyclerViewReviewsAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public RecyclerViewReviewsAdapter(List<String> reviewList){
         this.reviewList = reviewList;
-
     }
 
     @Override

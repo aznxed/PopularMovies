@@ -15,7 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.utils.NetworkUtils;
@@ -27,8 +27,9 @@ import java.net.URL;
 import java.util.List;
 
 
-import static com.example.android.popularmovies.utils.NetworkUtils.parseTrailerJSON;
-
+import static com.example.android.popularmovies.utils.NetworkUtils.TRAILER_JSON;
+import static com.example.android.popularmovies.utils.NetworkUtils.TRAILER_URL;
+import static com.example.android.popularmovies.utils.NetworkUtils.parseJSON;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +64,7 @@ public class TrailersFragment extends Fragment
         if(isConnected){
             Bundle bundle = this.getArguments();
             String id = bundle.getString("id");
-            new TrailerQueryTask().execute(NetworkUtils.buildTrailerUrl(id));
+            new TrailerQueryTask().execute(NetworkUtils.buildUrl(TRAILER_URL, id));
         }
 
     }
@@ -99,17 +100,30 @@ public class TrailersFragment extends Fragment
         @Override
         protected void onPostExecute(String s) {
             try {
-                trailerList = parseTrailerJSON(s);
+                trailerList = parseJSON(s, TRAILER_JSON);
+                if(trailerList == null){
+                    TextView noneMessage = getView().findViewById(R.id.none_message);
+                    String error = "Unable to retrieve data";
+                    noneMessage.setText(error);
+                    noneMessage.setVisibility(View.VISIBLE);
+                    return;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            RecyclerViewTrailerAdapter rcAdapter = new RecyclerViewTrailerAdapter(getContext(), trailerList, listItemClickListener);
-            GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
-            rView.setAdapter(rcAdapter);
-            rView.setHasFixedSize(true);
-            rView.setLayoutManager(layoutManager);
+            if(trailerList.isEmpty()){
+                TextView noneMessage = getView().findViewById(R.id.none_message);
+                noneMessage.setVisibility(View.VISIBLE);
+            }
 
+            else {
+                RecyclerViewTrailerAdapter rcAdapter = new RecyclerViewTrailerAdapter(getContext(), trailerList, listItemClickListener);
+                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
+                rView.setAdapter(rcAdapter);
+                rView.setHasFixedSize(true);
+                rView.setLayoutManager(layoutManager);
+            }
         }
     }
 

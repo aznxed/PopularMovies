@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.fragments;
 
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -25,7 +24,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import static com.example.android.popularmovies.utils.NetworkUtils.parseReviewJSON;
+import static com.example.android.popularmovies.utils.NetworkUtils.REVIEW_JSON;
+import static com.example.android.popularmovies.utils.NetworkUtils.REVIEW_URL;
+import static com.example.android.popularmovies.utils.NetworkUtils.parseJSON;
 
 
 /**
@@ -34,7 +35,7 @@ import static com.example.android.popularmovies.utils.NetworkUtils.parseReviewJS
 public class ReviewFragment extends Fragment {
 
     private List<String> reviewList;
-
+    private RecyclerView rView;
     public ReviewFragment() {
         // Required empty public constructor
     }
@@ -44,6 +45,7 @@ public class ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_review, container, false);
     }
 
@@ -52,14 +54,14 @@ public class ReviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = this.getArguments();
         String id = bundle.getString("id");
-
+        rView = getView().findViewById(R.id.recycler_view);
         reviewList = null;
 
         ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         if(isConnected){
-            new ReviewQueryTask().execute(NetworkUtils.buildReviewUrl(id));
+            new ReviewQueryTask().execute(NetworkUtils.buildUrl(REVIEW_URL, id));
         }
     }
 
@@ -71,6 +73,7 @@ public class ReviewFragment extends Fragment {
             String reviewJSON = null;
             try {
                 reviewJSON = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+
             } catch (IOException e){
                 e.printStackTrace();
             }
@@ -80,7 +83,14 @@ public class ReviewFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             try{
-                reviewList = parseReviewJSON(s);
+                reviewList = parseJSON(s, REVIEW_JSON);
+                if(reviewList == null){
+                    TextView noneMessage = getView().findViewById(R.id.none_message);
+                    String error = "Unable to retrieve data";
+                    noneMessage.setText(error);
+                    noneMessage.setVisibility(View.VISIBLE);
+                    return;
+                }
             }catch (JSONException e){
                 e.printStackTrace();
             }
@@ -93,7 +103,7 @@ public class ReviewFragment extends Fragment {
 
                 RecyclerViewReviewsAdapter rcAdapter = new RecyclerViewReviewsAdapter(reviewList);
                 LinearLayoutManager reviewLayout = new LinearLayoutManager(getContext());
-                RecyclerView rView = getView().findViewById(R.id.recycler_view);
+
                 rView.setAdapter(rcAdapter);
                 rView.setHasFixedSize(true);
                 rView.setLayoutManager(reviewLayout);

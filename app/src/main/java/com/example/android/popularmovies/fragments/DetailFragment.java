@@ -7,10 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +48,7 @@ public class DetailFragment extends Fragment {
         TextView ratingText = getView().findViewById(R.id.rating);
         TextView releaseDateText = getView().findViewById(R.id.release_date);
 
+        //Retrieve extras from detail fragment
         final Bundle bundle = this.getArguments();
         String title = bundle.getString("original_title");
         String photoUrl = bundle.getString("poster_path");
@@ -57,8 +56,9 @@ public class DetailFragment extends Fragment {
         String overview = bundle.getString("overview");
         String rating = bundle.getString("vote_average");
         String releaseDate = bundle.getString("release_date");
-        detailTitle.setText(title);
 
+        //Set text fields
+        detailTitle.setText(title);
         releaseDateText.setText(releaseDate);
         ratingText.setText(rating.concat("/10"));
         overviewText.setText(overview);
@@ -67,6 +67,8 @@ public class DetailFragment extends Fragment {
 
         final FloatingActionButton favButton = getView().findViewById(R.id.fav_button);
         final FloatingActionButton unfavButton = getView().findViewById(R.id.unfav_button);
+
+        //On UnFavorite delete entry from table
         unfavButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,10 +83,10 @@ public class DetailFragment extends Fragment {
             }
         });
 
+        //On Favorite insert entry into table
         favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 ContentValues contentValues = new ContentValues();
                 // Put the task description and selected mPriority into the ContentValues
@@ -108,14 +110,14 @@ public class DetailFragment extends Fragment {
         });
 
         //Check if the movie is already in the favorites
+        //If it is, don't show the fav button
         String selectionClause = MovieContract.MovieEntry.COLUMN_ID + " = ?";
         String[] selectionArgs = {bundle.getString("id")};
         Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, selectionClause, selectionArgs, null);
-
         if(cursor.getCount() != 0){
             favButton.setVisibility(View.GONE);
             unfavButton.setVisibility(View.VISIBLE);
-
         }
+        cursor.close();
     }
 }

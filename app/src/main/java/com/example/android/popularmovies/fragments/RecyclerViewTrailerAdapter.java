@@ -46,7 +46,7 @@ public class RecyclerViewTrailerAdapter extends RecyclerView.Adapter<RecyclerVie
         StringBuilder path = new StringBuilder("https://img.youtube.com/vi/");
         path.append(keys.get((position*2)));
         path.append("/mqdefault.jpg");
-        Picasso.with(context).load(path.toString()).into(holder.trailerImage);
+        Picasso.with(context).load(path.toString()).error(R.drawable.ic_broken_image_black_24dp).into(holder.trailerImage);
     }
 
     @Override
