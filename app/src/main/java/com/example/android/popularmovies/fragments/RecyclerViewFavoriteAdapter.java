@@ -1,6 +1,5 @@
 package com.example.android.popularmovies.fragments;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,7 +33,7 @@ public class RecyclerViewFavoriteAdapter extends RecyclerView.Adapter<RecyclerVi
     public FavoriteHolders onCreateViewHolder(ViewGroup parent, int viewType) {
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorite_view, null);
         return new FavoriteHolders(layoutView);
-    };
+    }
 
     @Override
     public void onBindViewHolder(FavoriteHolders holder, int position) {

@@ -1,13 +1,13 @@
 package com.example.android.popularmovies;
 
 public class movieObject {
-    private int id;
-    private String name;
-    private String description;
-    private String photoUrl;
-    private String backgroundUrl;
-    private String rating;
-    private String releaseDate;
+    private final int id;
+    private final String name;
+    private final String description;
+    private final String photoUrl;
+    private final String backgroundUrl;
+    private final String rating;
+    private final String releaseDate;
 
     public movieObject(int id, String name, String photoUrl, String backgroundUrl, String description, String rating, String releaseDate){
         this.id = id;

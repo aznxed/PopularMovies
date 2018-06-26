@@ -2,20 +2,16 @@ package com.example.android.popularmovies.fragments;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 public class RecyclerViewTrailerAdapter extends RecyclerView.Adapter<RecyclerViewTrailerAdapter.TrailerHolders>{
 
@@ -43,9 +39,7 @@ public class RecyclerViewTrailerAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(TrailerHolders holder, int position) {
         holder.key = keys.get((position*2));
         holder.trailerName.setText(keys.get((position*2)+1));
-        StringBuilder path = new StringBuilder("https://img.youtube.com/vi/");
-        path.append(keys.get((position*2)));
-        path.append("/mqdefault.jpg");
+        String path = "https://img.youtube.com/vi/" + keys.get(position*2) + "/mqdefault.jpg";
         Picasso.with(context).load(path.toString()).error(R.drawable.ic_broken_image_black_24dp).into(holder.trailerImage);
     }
 

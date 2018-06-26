@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
-import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.

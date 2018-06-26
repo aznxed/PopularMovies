@@ -21,7 +21,7 @@ public class DetailActivity extends AppCompatActivity {
     private TrailersFragment trailersFragment;
     private BottomNavigationView navigation;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override

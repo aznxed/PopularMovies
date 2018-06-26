@@ -70,12 +70,11 @@ public class FavoritesFragment extends Fragment
             @Override
             public Cursor loadInBackground() {
                 try {
-                    Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                    return getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                             null,
                             null,
                             null,
                             null);
-                    return cursor;
 
                 } catch (Exception e) {
                     Log.d("Test", "Failed to asynchronously load data.");
