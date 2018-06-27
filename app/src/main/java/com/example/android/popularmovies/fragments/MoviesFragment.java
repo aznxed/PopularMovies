@@ -1,10 +1,7 @@
 package com.example.android.popularmovies.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,7 +28,6 @@ import org.json.JSONException;
 import static com.example.android.popularmovies.utils.NetworkUtils.MOVIE_URL;
 import static com.example.android.popularmovies.utils.NetworkUtils.POPULAR;
 import static com.example.android.popularmovies.utils.NetworkUtils.TOP_RATED;
-import static com.example.android.popularmovies.utils.NetworkUtils.parseMovieJSON;
 
 public class MoviesFragment extends Fragment
         implements RecyclerViewMovieAdapter.ListItemClickListener {
@@ -56,11 +52,7 @@ public class MoviesFragment extends Fragment
         movieList = null;
         errorText = getView().findViewById(R.id.error_message);
 
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
-
+        if(NetworkUtils.isConnected(getContext())){
             new MovieQueryTask().execute(NetworkUtils.buildUrl(MOVIE_URL, POPULAR));
         }
         else {
@@ -72,10 +64,8 @@ public class MoviesFragment extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(!isConnected){
+
+        if(!NetworkUtils.isConnected(getContext())){
             return false;
         }
 
@@ -110,7 +100,7 @@ public class MoviesFragment extends Fragment
         @Override
         protected void onPostExecute(String s) {
             try {
-                movieList = parseMovieJSON(s);
+                movieList = NetworkUtils.parseMovieJSON(s);
                 if(movieList == null){
                     String error = "Unable to retrieve data";
                     errorText.setText(error);
@@ -151,6 +141,4 @@ public class MoviesFragment extends Fragment
         movieDetail.putExtra("vote_average", movieClicked.getRating());
         startActivity(movieDetail);
     }
-
-
 }

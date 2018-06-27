@@ -42,6 +42,7 @@ public class FavoritesFragment extends Fragment
         super.onCreateView(inflater, container, savedInstanceState);
         itemClickListener = this;
         itemLongClickListener = this;
+
         getActivity().getSupportLoaderManager().initLoader(0, null, this);
         return inflater.inflate(R.layout.fragment_favorites, container, false);
     }
@@ -146,8 +147,6 @@ public class FavoritesFragment extends Fragment
         movieDetail.putExtra("vote_average", cursor.getString(rating));
         cursor.close();
         startActivity(movieDetail);
-
-
     }
 
     @Override
@@ -168,5 +167,4 @@ public class FavoritesFragment extends Fragment
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 }

@@ -1,5 +1,8 @@
 package com.example.android.popularmovies.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 
 import com.example.android.popularmovies.movieObject;
@@ -18,7 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final private static String API_KEY = "Insert API key";
+    final private static String API_KEY = "INSERT API KEY";
     final private static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500/";
     final private static String ENGLISH = "en-US";
@@ -142,5 +145,11 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static boolean isConnected(Context context){
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

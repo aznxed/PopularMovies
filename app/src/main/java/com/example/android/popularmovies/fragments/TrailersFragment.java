@@ -1,9 +1,6 @@
 package com.example.android.popularmovies.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,11 +54,8 @@ public class TrailersFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rView = getView().findViewById(R.id.recycler_view);
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
+        if(NetworkUtils.isConnected(getContext())){
             Bundle bundle = this.getArguments();
             String id = bundle.getString("id");
             new TrailerQueryTask().execute(NetworkUtils.buildUrl(TRAILER_URL, id));

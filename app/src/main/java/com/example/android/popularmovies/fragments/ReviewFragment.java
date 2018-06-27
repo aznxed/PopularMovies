@@ -1,8 +1,5 @@
 package com.example.android.popularmovies.fragments;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -28,7 +25,6 @@ import static com.example.android.popularmovies.utils.NetworkUtils.REVIEW_JSON;
 import static com.example.android.popularmovies.utils.NetworkUtils.REVIEW_URL;
 import static com.example.android.popularmovies.utils.NetworkUtils.parseJSON;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -36,8 +32,12 @@ public class ReviewFragment extends Fragment {
 
     private List<String> reviewList;
     private RecyclerView rView;
+    private LinearLayoutManager reviewLayout;
+
     public ReviewFragment() {
         // Required empty public constructor
+        reviewList = null;
+        reviewLayout = new LinearLayoutManager(getContext());
     }
 
 
@@ -52,18 +52,23 @@ public class ReviewFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Bundle bundle = this.getArguments();
         String id = bundle.getString("id");
-        rView = getView().findViewById(R.id.recycler_view);
-        reviewList = null;
 
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
+        if(NetworkUtils.isConnected(getContext())){
             new ReviewQueryTask().execute(NetworkUtils.buildUrl(REVIEW_URL, id));
         }
+
+        if (savedInstanceState != null){
+            reviewLayout.onRestoreInstanceState(savedInstanceState.getParcelable("state"));
+        }
+
+        rView = getView().findViewById(R.id.recycler_view);
+
     }
+
+
 
     private class ReviewQueryTask extends AsyncTask<URL, Void, String>{
 
@@ -102,8 +107,6 @@ public class ReviewFragment extends Fragment {
             else {
 
                 RecyclerViewReviewsAdapter rcAdapter = new RecyclerViewReviewsAdapter(reviewList);
-                LinearLayoutManager reviewLayout = new LinearLayoutManager(getContext());
-
                 rView.setAdapter(rcAdapter);
                 rView.setHasFixedSize(true);
                 rView.setLayoutManager(reviewLayout);
@@ -112,4 +115,9 @@ public class ReviewFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("state", reviewLayout.onSaveInstanceState());
+    }
 }
