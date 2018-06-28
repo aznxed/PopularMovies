@@ -33,11 +33,10 @@ public class ReviewFragment extends Fragment {
     private List<String> reviewList;
     private RecyclerView rView;
     private LinearLayoutManager reviewLayout;
-
+    private RecyclerViewReviewsAdapter rcAdapter;
     public ReviewFragment() {
         // Required empty public constructor
         reviewList = null;
-        reviewLayout = new LinearLayoutManager(getContext());
     }
 
 
@@ -45,30 +44,20 @@ public class ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_review, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Bundle bundle = this.getArguments();
-        String id = bundle.getString("id");
-
-        if(NetworkUtils.isConnected(getContext())){
-            new ReviewQueryTask().execute(NetworkUtils.buildUrl(REVIEW_URL, id));
-        }
-
-        if (savedInstanceState != null){
-            reviewLayout.onRestoreInstanceState(savedInstanceState.getParcelable("state"));
-        }
-
         rView = getView().findViewById(R.id.recycler_view);
 
+        if(NetworkUtils.isConnected(getContext())){
+            Bundle bundle = this.getArguments();
+            String id = bundle.getString("id");
+            new ReviewQueryTask().execute(NetworkUtils.buildUrl(REVIEW_URL, id));
+        }
     }
-
-
 
     private class ReviewQueryTask extends AsyncTask<URL, Void, String>{
 
@@ -105,8 +94,8 @@ public class ReviewFragment extends Fragment {
                 noneMessage.setVisibility(View.VISIBLE);
             }
             else {
-
-                RecyclerViewReviewsAdapter rcAdapter = new RecyclerViewReviewsAdapter(reviewList);
+                rcAdapter = new RecyclerViewReviewsAdapter(reviewList);
+                reviewLayout = new LinearLayoutManager(getContext());
                 rView.setAdapter(rcAdapter);
                 rView.setHasFixedSize(true);
                 rView.setLayoutManager(reviewLayout);

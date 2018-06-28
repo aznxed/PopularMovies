@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,15 +113,7 @@ public class MoviesFragment extends Fragment
             }
 
             RecyclerViewMovieAdapter rcAdapter = new RecyclerViewMovieAdapter(getContext(), movieList, listClickListener);
-            int res = getResources().getConfiguration().orientation;
-            GridLayoutManager movieLayout;
-            if(res == Configuration.ORIENTATION_LANDSCAPE){
-                movieLayout = new GridLayoutManager(getContext(), 3);
-            }
-            else{
-                movieLayout = new GridLayoutManager(getContext(), 2);
-            }
-
+            GridLayoutManager movieLayout = new GridLayoutManager(getContext(), 2);
             RecyclerView rView = getView().findViewById(R.id.recycler_view);
             rView.setAdapter(rcAdapter);
             rView.setHasFixedSize(true);

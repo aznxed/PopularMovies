@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             // Show 2 total pages.
             return 2;
         }
-
     }
 
 }

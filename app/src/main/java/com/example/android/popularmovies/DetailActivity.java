@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,49 +23,40 @@ public class DetailActivity extends AppCompatActivity {
     private DetailFragment detailFragment;
     private ReviewFragment reviewFragment;
     private TrailersFragment trailersFragment;
-    private BottomNavigationView navigation;
-
-    private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_details:
-                    setFragment(detailFragment);
-                    return true;
-                case R.id.navigation_reviews:
-                    setFragment(reviewFragment);
-                    return true;
-                case R.id.navigation_trailers:
-                    setFragment(trailersFragment);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        ViewPager mViewPager = findViewById(R.id.container);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
         detailFragment = new DetailFragment();
         reviewFragment = new ReviewFragment();
         trailersFragment = new TrailersFragment();
 
-
-        navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //Retain tab on rotation
-        if(savedInstanceState != null){
-            View view = navigation.findViewById(savedInstanceState.getInt("tab"));
-            view.performClick();
-        }
-        else{
-            setFragment(detailFragment);
-        }
 
         //Get extras from Main Activity
         Intent intentThatCalledActivity = getIntent();
@@ -91,17 +86,32 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        int selected = navigation.getSelectedItemId();
-        outState.putInt("tab", selected);
-    }
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    private void setFragment(Fragment fragment){
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_frame, fragment);
-        fragmentTransaction.commit();
+        private SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            switch (position){
+                case 0:
+                    return detailFragment;
+                case 1:
+                    return reviewFragment;
+                case 2:
+                    return trailersFragment;
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            // Show 2 total pages.
+            return 3;
+        }
     }
 
 }
