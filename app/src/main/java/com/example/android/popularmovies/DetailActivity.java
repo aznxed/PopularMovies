@@ -2,17 +2,12 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.example.android.popularmovies.fragments.DetailFragment;
 import com.example.android.popularmovies.fragments.ReviewFragment;
@@ -35,22 +30,6 @@ public class DetailActivity extends AppCompatActivity {
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         detailFragment = new DetailFragment();
@@ -109,7 +88,7 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
+            // Show 3 total pages.
             return 3;
         }
     }
